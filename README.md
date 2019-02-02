@@ -1,4 +1,5 @@
 
+# CloudSync [![Build Status](https://travis-ci.org/martez81/cloudsync.svg?branch=master)](https://travis-ci.org/martez81/markov4s)
 Markov4s is a small library that introduces immutable data structure to represent Markov Chain.
 
 Usage:
@@ -11,7 +12,7 @@ val chain = MarkovChain[Int]
 
 // add relationship between node of value 0 and 1
 val chain1 = chain + (0 -> 1) + (1 -> 2) + (2 -> 3)
-val chain2 = chain1.getVec(0, 3)
+val chain2 = chain1.getVec(0, 4)
 
 // result: Vector(0, 1, 2, 3)
 ```
@@ -23,7 +24,7 @@ val chain = MarkovChain[String].
     fromSeq(List("hello", "world", "how", "are", "you", "!")).
     fromSeq(List("hello", "marcin", "how", "are", "things", "?"))
 
-for (i <- 0 until 10) println(chain.getVecWithProb("hello", 5).mkString(" "))
+for (i <- 0 until 10) println(chain.getVecWithProb("hello", 6).mkString(" "))
 
 // Will result in the following output.
 
