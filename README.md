@@ -1,5 +1,5 @@
 
-# CloudSync [![Build Status](https://travis-ci.org/martez81/cloudsync.svg?branch=master)](https://travis-ci.org/martez81/markov4s)
+# CloudSync [![Build Status](https://travis-ci.org/martez81/cloudsync.svg?branch=master)](https://travis-ci.org/markosski/markov4s)
 Markov4s is a small library that introduces immutable data structure to represent Markov Chain.
 
 Usage:
