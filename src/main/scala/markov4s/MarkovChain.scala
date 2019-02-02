@@ -2,6 +2,7 @@ package markov4s
 
 import scala.collection.immutable.HashMap
 import scala.math.random
+import scala.util.Random
 import MarkovChain.{Counter, Data}
 import scala.annotation.tailrec
 
@@ -102,31 +103,68 @@ final case class MarkovChain[A](data: Data[A], counter: Counter[A]) {
   /**
     * Get single item with highest probability value.
     */
-  def get(a: A): Option[A] = {
-    getTop(a, 1).headOption
+  def get(a: A): Option[A] = getTop(a, 1).headOption
+
+  /**
+   * Pick random element and return a pair of random element and next element.
+   */
+  def getRandomTop: (A, A) = getRandomInner(get)
+
+  /**
+   * Pick random element and return a pair of random element and next element.
+   */
+  def getRandomWithProb: (A, A) = getRandomInner(getWithProb)
+
+  /**
+    * Get sequence of elements using probability distribution starting with random element.
+    */
+  def getRandomVecWithProb(atMost: Int): Vector[A] = {
+    val elem = getRandomElement()
+    getVecWithProb(elem, atMost)
+  }
+
+  /**
+    * Get sequence of elements selecting highest likelyhood elements starting with random element.
+    */
+  def getRandomVec(atMost: Int): Vector[A] = {
+    val elem = getRandomElement()
+    getVec(elem, atMost)
+  }
+
+  private def getRandomElement(): A = {
+    val rand = Random.nextInt(data.keys.size)
+    data.keys.toList(rand)
+  }
+
+  private def getRandomInner(f: A => Option[A]): (A, A) = {
+    val elem = getRandomElement()
+    (elem -> f(elem).get)
   }
 
   /**
     * Get sequence of elements using probability distribution.
     */
-  def getVecWithProb(a: A, atMost: Int): Seq[A] = {
-    doInnerVec(a, Vector[A](a), getWithProb, atMost)
-  }
+  def getVecWithProb(a: A, atMost: Int): Vector[A] = getVecWith(a, atMost)(getWithProb)
 
   /**
     * Get sequence of elements using highest probability value.
     */
-  def getVec(a: A, atMost: Int): Seq[A] = {
-    doInnerVec(a, Vector[A](a), get, atMost)
+  def getVec(a: A, atMost: Int): Vector[A] = getVecWith(a, atMost)(get)
+
+  private def getVecWith(a: A, atMost: Int)(f: A => Option[A]) = {
+    if (atMost > 0)
+      doInnerVec(a, Vector[A](a), math.max(0, atMost-1))(f)
+    else
+      Vector[A]()
   }
 
   @tailrec
-  private def doInnerVec(a: A, as: Vector[A], f: A => Option[A], num: Int): Vector[A] = {
+  private def doInnerVec(a: A, as: Vector[A], num: Int)(f: A => Option[A]): Vector[A] = {
     num match {
       case 0 => as
       case _ => {
         f(a) match {
-          case Some(a1) => doInnerVec(a1, as :+ a1, f, num-1)
+          case Some(a1) => doInnerVec(a1, as :+ a1, num-1)(f)
           case None => as
         }
       }
