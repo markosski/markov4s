@@ -2,6 +2,9 @@
 # Markov4s [![Build Status](https://travis-ci.org/markosski/cloudsync.svg?branch=master)](https://travis-ci.org/markosski/markov4s)
 Markov4s is a small library that introduces immutable data structure to represent Markov Chain.
 
+Package location:
+https://bintray.com/markosski/maven/markov4s
+
 Usage:
 
 ```
