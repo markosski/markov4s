@@ -6,6 +6,23 @@ package markov4s
 trait RNG {
   def nextInt: (Int, RNG)
 }
+
+trait RandLike {
+  def nextInt: Int
+  def nextDouble: Double
+  def make(seed: Int): RandLike
+}
+
+class Rand(seed: Int) extends RandLike {
+  val r = new scala.util.Random(seed)
+  def nextInt = r.nextInt()
+  def nextDouble = r.nextDouble()
+  def make(seed: Int) = new Rand(seed)
+}
+
+object Rand {
+  def apply() = new Rand(System.currentTimeMillis.toInt)
+}
   
 object RNG {
   def init = apply(System.currentTimeMillis)

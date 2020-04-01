@@ -1,6 +1,6 @@
 package markov4s
 
-import scala.collection.immutable.HashMap
+import scala.collection.mutable.HashMap
 import scala.annotation.tailrec
 import MarkovChain.{Counter, Data}
 
@@ -13,18 +13,25 @@ object MarkovChain {
   /**
     * Primary access point to construct empty MarkovChain.
     */
-  def apply[A]: MarkovChain[A] = {
+  def apply[A]: MarkovChain[A] =
     MarkovChain(
       HashMap[A, HashMap[A, MarkovNode]](),
-      HashMap[A, Int]()
+      HashMap[A, Int](),
+      Rand()
     )
-  }
 
-  def sequenceRandomVec[A](rng: RNG, iterations: Int, vecSize: Int, f: RNG => Int => (RNG, Vector[A])): (RNG, List[Vector[A]]) = {
-    val result = (0 to iterations).scanLeft((rng, Vector[A]())) { (a, b) => 
-      f(a._1)(vecSize)
+  def apply[A](rand: RandLike): MarkovChain[A] =
+    MarkovChain(
+      HashMap[A, HashMap[A, MarkovNode]](),
+      HashMap[A, Int](),
+      rand
+    )
+
+  def sequenceRandomVec[A](s: RNG, iterations: Int, vecSize: Int, f: Int => Vector[A]): List[Vector[A]] = {
+    val result = (0 to iterations).scanLeft(Vector[A]()) { (a, b) => 
+      f(vecSize)
     }
-    (result.last._1, result.map(_._2).tail.toList)
+    result.tail.toList
   }
 
   def sequenceVec[A](rng: RNG, iterations: Int, vecSize: Int, elem: A, f: RNG => (A, Int) => (RNG, Vector[A])): (RNG, List[Vector[A]]) = {
@@ -35,23 +42,36 @@ object MarkovChain {
   }
 }
 
-final case class MarkovChain[A](data: Data[A], counter: Counter[A]) {
+final case class MarkovChain[A](data: Data[A], counter: Counter[A], rand: RandLike) {
+  def equals(that: MarkovChain[A]): Boolean = {
+    if (that.data == data && that.counter == counter) true
+    else false
+  }
   /**
     * Add single element.
     */
   def put(a: A, b: A): MarkovChain[A] = {
-    val newData: Data[A] = data.get(a) match {
+    data.get(a) match {
       case Some(elemA) => {
         elemA.get(b) match {
-          case Some(elemB)  => data + (a -> (elemA + (b -> MarkovNode(elemB.count + 1, 0.0))))
-          case None		      => data + (a -> (elemA + (b -> MarkovNode(1, 0.0))))
+          case Some(elemB)  => {
+            elemA.update(b, MarkovNode(elemB.count + 1, 0.0))
+            data.update(a, elemA)
+          }
+          case None		      => {
+            elemA.update(b, MarkovNode(1, 0.0))
+            data.update(a, elemA)
+          }
         }
       }
-      case None => data + (a -> HashMap(b -> MarkovNode(1, 0.0)))
+      case None => {
+        data.update(a, HashMap(b -> MarkovNode(1, 0.0)))
+      }
     }
-    val newCounter = counter + (a -> (counter.getOrElse(a, 0) + 1))
 
-    MarkovChain(updateNodes(a, newData, newCounter), newCounter)
+    counter.update(a, (counter.getOrElse(a, 0) + 1))
+
+    MarkovChain(updateNodes(a, data, counter), counter, rand)
   }
 
   /**
@@ -70,9 +90,11 @@ final case class MarkovChain[A](data: Data[A], counter: Counter[A]) {
     data.get(key) match {
       case Some(el) => {
         val newElem = el.keys.toList.foldLeft(el) { (e, x) =>
-          e + (x -> MarkovNode(e(x).count, e(x).count / counters(key).toDouble))
+          e.update(x, MarkovNode(e(x).count, e(x).count / counters(key).toDouble))
+          e
         }
-        data + (key -> newElem)
+        data.update(key, newElem)
+        data
       }
       case None => data
     }
@@ -81,9 +103,10 @@ final case class MarkovChain[A](data: Data[A], counter: Counter[A]) {
   /**
     * Get single item from probability distribution.
     */
-  def getWithProb(rng: RNG)(a: A): (RNG, Option[A]) = {
-    val nextRng = rng.nextInt
-    val rngDouble: Double = RNG.toDouble(nextRng._1)
+  def getWithProb(a: A): Option[A] = {
+    val nextInt = rand.nextInt
+    val newRand = rand.make(nextInt)
+    val nextDouble: Double = newRand.nextDouble
     data.get(a) match {
       case Some(elemA) => {
         val els = elemA.toList.sortBy(_._2.prob)
@@ -91,13 +114,13 @@ final case class MarkovChain[A](data: Data[A], counter: Counter[A]) {
         var result = a
         var prev = 0.0
         for (el <- els) {
-          if (rngDouble >= prev && rngDouble <= prev + el._2.prob) result = el._1
+          if (nextDouble >= prev && nextDouble <= prev + el._2.prob) result = el._1
           prev = prev + el._2.prob
         }
 
-        (nextRng._2, Some(result))
+        Some(result)
       }
-      case None => (rng, None)
+      case None => None
     }
   }
 
@@ -121,34 +144,33 @@ final case class MarkovChain[A](data: Data[A], counter: Counter[A]) {
   /**
     * Get sequence of elements using probability distribution starting with random element.
     */
-  def getRandomVecWithProb(rng: RNG)(atMost: Int): (RNG, Vector[A]) = {
-    val elem = getRandomElement(rng)
-    (elem._1, getVecWithProb(rng)(elem._2, atMost)._2)
+  def getRandomVecWithProb(atMost: Int): Vector[A] = {
+    val elem = getRandomElement
+    getVecWithProb(elem, atMost)
   }
 
   /**
     * Get sequence of elements selecting highest probability elements starting with random element.
     */
-  def getRandomVec(rng: RNG)(atMost: Int): (RNG, Vector[A]) = {
-    val elem = getRandomElement(rng)
-    (elem._1, getVec(elem._2, atMost))
+  def getRandomVec(atMost: Int): Vector[A] = {
+    val elem = getRandomElement
+    getVec(elem, atMost)
   }
 
-  private def getRandomElement(rng: RNG): (RNG, A) = {
-    val nextRng = rng.nextInt
-    val index = math.abs(nextRng._1) % data.keys.size
+  private def getRandomElement: A = {
+    val index = math.abs(rand.nextInt) % data.keys.size
 
-    (nextRng._2, data.keys.toList(index))
+    data.keys.toList(index)
   }
 
   /**
     * Get sequence of elements using probability distribution.
     */
-  def getVecWithProb(rng: RNG)(a: A, atMost: Int): (RNG, Vector[A]) = {
+  def getVecWithProb(a: A, atMost: Int): Vector[A] = {
     if (atMost > 0)
-      doInnerVec(a, Vector[A](a), math.max(0, atMost-1), rng)(getWithProb)
+      doInnerVec(a, Vector[A](a), math.max(0, atMost-1))(getWithProb)
     else
-      (rng, Vector[A]())
+      Vector[A]()
   }
 
   /**
@@ -160,24 +182,24 @@ final case class MarkovChain[A](data: Data[A], counter: Counter[A]) {
    * Produce function with no-op RNG. Used to allow composition in doInnverVec.
    */
   private def liftNoOpRNG(f: A => Option[A]) = {
-    (rng: RNG) => (a: A) => (rng, f(a))
+    (a: A) => f(a)
   }
 
   private def getVecWith(a: A, atMost: Int)(f: A => Option[A]): Vector[A] = {
     if (atMost > 0)
-      doInnerVec(a, Vector[A](a), math.max(0, atMost-1), RNG(0))(liftNoOpRNG(f))._2
+      doInnerVec(a, Vector[A](a), math.max(0, atMost-1))(liftNoOpRNG(f))
     else
       Vector[A]()
   }
 
   @tailrec
-  private def doInnerVec(a: A, as: Vector[A], num: Int, rng: RNG)(f: RNG => A => (RNG, Option[A])): (RNG, Vector[A]) = {
+  private def doInnerVec(a: A, as: Vector[A], num: Int)(f: A => Option[A]): Vector[A] = {
     num match {
-      case 0 => (rng, as)
+      case 0 => as
       case _ => {
-        f(rng)(a) match {
-          case (newRNG: RNG, Some(a1)) => doInnerVec(a1, as :+ a1, num-1, newRNG)(f)
-          case (newRNG: RNG, None) => (newRNG, as)
+        f(a) match {
+          case Some(a1) => doInnerVec(a1, as :+ a1, num-1)(f)
+          case None => as
         }
       }
     }

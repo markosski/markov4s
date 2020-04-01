@@ -5,8 +5,8 @@ import org.scalatest._
 
 class MarkovChainTest extends FlatSpec with Matchers {
   "Two chains with the same data" should "be equal." in {
-    val chain1 = MarkovChain[String] + ("a" -> "b") + ("b" -> "c")
-    val chain2 = MarkovChain[String] + ("b" -> "c") + ("a" -> "b")
+    val chain1 = MarkovChain[String](new Rand(1)) + ("a" -> "b") + ("b" -> "c")
+    val chain2 = MarkovChain[String](new Rand(1)) + ("b" -> "c") + ("a" -> "b")
 
     chain1 shouldEqual chain2
   }
@@ -27,27 +27,27 @@ class MarkovChainTest extends FlatSpec with Matchers {
     ("c" -> "a")
 
     // Compare getRandomVec in terms of getVec
-    val rng = RNG.init
-    val result = chain.getRandomVec(rng)(3)
-    val expected = chain.getVec(result._2.head, 3)
+    val result = chain.getRandomVec(3)
+    val expected = chain.getVec(result.head, 3)
 
-    result._2 shouldEqual expected
+    result shouldEqual expected
   }
 
   ".getRandomVecWithProb" should "return a vector of top matching value with random initial element." in {
-    val chain = MarkovChain[String] + 
+    val chain1 = MarkovChain[String](new Rand(1)) + 
     ("a" -> "b") +
     ("b" -> "c") + 
     ("c" -> "a") +
     ("a" -> "b") +
     ("c" -> "d")
 
-    // Compare getRandomVec in terms of getVecWithProb
-    val rng = RNG.init
-    val result = chain.getRandomVecWithProb(rng)(3)
-    val expected = chain.getVecWithProb(rng)(result._2.head, 3)
+    val chain2 = chain1.copy()
 
-    result._2 shouldEqual expected._2
+    // Compare getRandomVec in terms of getVecWithProb
+    val result = chain1.getRandomVecWithProb(3)
+    val expected = chain2.getVecWithProb(result.head, 3)
+
+    result shouldEqual expected
   }
 
   ".getTop" should "return N top elements." in {
@@ -77,8 +77,8 @@ class MarkovChainTest extends FlatSpec with Matchers {
     chain.getTop("b", 1) shouldEqual List("b")
 
     val rng = RNG.init
-    chain.getWithProb(rng)("a")._2 shouldEqual Some("a")
-    chain.getWithProb(rng)("b")._2 shouldEqual Some("b")
+    chain.getWithProb("a") shouldEqual Some("a")
+    chain.getWithProb("b") shouldEqual Some("b")
   }
 
   ".fromSeq and .put operators" should "yield the same result." in {
