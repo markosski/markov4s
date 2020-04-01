@@ -5,8 +5,8 @@ import org.scalatest._
 
 class MarkovChainTest extends FlatSpec with Matchers {
   "Two chains with the same data" should "be equal." in {
-    val chain1 = MarkovChain[String](new Rand(1)) + ("a" -> "b") + ("b" -> "c")
-    val chain2 = MarkovChain[String](new Rand(1)) + ("b" -> "c") + ("a" -> "b")
+    val chain1 = MarkovChain[String] + ("a" -> "b") + ("b" -> "c")
+    val chain2 = MarkovChain[String] + ("b" -> "c") + ("a" -> "b")
 
     chain1 shouldEqual chain2
   }
@@ -27,25 +27,25 @@ class MarkovChainTest extends FlatSpec with Matchers {
     ("c" -> "a")
 
     // Compare getRandomVec in terms of getVec
-    val result = chain.getRandomVec(3)
+    val result = chain.getRandomVec(new Rand(1))(3)
     val expected = chain.getVec(result.head, 3)
 
     result shouldEqual expected
   }
 
   ".getRandomVecWithProb" should "return a vector of top matching value with random initial element." in {
-    val chain1 = MarkovChain[String](new Rand(1)) + 
+    val chain = MarkovChain[String] + 
     ("a" -> "b") +
     ("b" -> "c") + 
     ("c" -> "a") +
     ("a" -> "b") +
     ("c" -> "d")
 
-    val chain2 = chain1.copy()
-
     // Compare getRandomVec in terms of getVecWithProb
-    val result = chain1.getRandomVecWithProb(3)
-    val expected = chain2.getVecWithProb(result.head, 3)
+    val rand1 = new Rand(1)
+    val rand2 = new Rand(1)
+    val result = chain.getRandomVecWithProb(rand1)(3)
+    val expected = chain.getVecWithProb(rand2)(result.head, 3)
 
     result shouldEqual expected
   }
@@ -76,9 +76,9 @@ class MarkovChainTest extends FlatSpec with Matchers {
     chain.getTop("a", 1) shouldEqual List("a")
     chain.getTop("b", 1) shouldEqual List("b")
 
-    val rng = RNG.init
-    chain.getWithProb("a") shouldEqual Some("a")
-    chain.getWithProb("b") shouldEqual Some("b")
+    val rand = new Rand(1)
+    chain.getWithProb(rand)("a") shouldEqual Some("a")
+    chain.getWithProb(rand)("b") shouldEqual Some("b")
   }
 
   ".fromSeq and .put operators" should "yield the same result." in {
