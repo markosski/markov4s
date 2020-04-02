@@ -1,7 +1,9 @@
+enablePlugins(MicrositesPlugin)
+
 lazy val root = (project in file(".")).
   settings(
     inThisBuild(List(
-      organization := "markosski",
+      organization := "marcinkossakowski.com",
       scalaVersion := "2.12.11",
       version      := "0.2.0"
     )),
