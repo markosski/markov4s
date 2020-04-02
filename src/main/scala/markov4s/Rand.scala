@@ -2,13 +2,6 @@ package markov4s
 
 import scala.util.Random
 
-/**
- * Random number generator taken from the "red book" - Functional Programmin in Scala.
- */
-trait RNG {
-  def nextInt: (Int, RNG)
-}
-
 trait RandLike {
   def nextInt: Int
   def nextDouble: Double

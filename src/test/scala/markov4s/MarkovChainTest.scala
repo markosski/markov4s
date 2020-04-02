@@ -2,6 +2,7 @@ package markov4s
 
 import collection.mutable.Stack
 import org.scalatest._
+import scala.collection.immutable.HashMap
 
 class MarkovChainTest extends FlatSpec with Matchers {
   "Two chains with the same data" should "be equal." in {
@@ -13,11 +14,11 @@ class MarkovChainTest extends FlatSpec with Matchers {
 
   ".getVec" should "return a vector of top matching values." in {
     val chain = MarkovChain[String] + ("a" -> "b") + ("b" -> "c")
-    chain.getVec("a", 3) shouldEqual Vector[String]("a", "b", "c")
-    chain.getVec("a", 2) shouldEqual Vector("a", "b")
-    chain.getVec("a", 1) shouldEqual Vector("a")
-    chain.getVec("a", 0) shouldEqual Vector()
-    chain.getVec("a", -1) shouldEqual Vector()
+    chain.getSeq("a", 3) shouldEqual Vector[String]("a", "b", "c")
+    chain.getSeq("a", 2) shouldEqual Vector("a", "b")
+    chain.getSeq("a", 1) shouldEqual Vector("a")
+    chain.getSeq("a", 0) shouldEqual Vector()
+    chain.getSeq("a", -1) shouldEqual Vector()
   }
 
   ".getRandomVec" should "return a vector of top matching value with random initial element." in {
@@ -28,7 +29,7 @@ class MarkovChainTest extends FlatSpec with Matchers {
 
     // Compare getRandomVec in terms of getVec
     val result = chain.getRandomVec(new Rand(1))(3)
-    val expected = chain.getVec(result.head, 3)
+    val expected = chain.getSeq(result.head, 3)
 
     result shouldEqual expected
   }
@@ -45,7 +46,7 @@ class MarkovChainTest extends FlatSpec with Matchers {
     val rand1 = new Rand(1)
     val rand2 = new Rand(1)
     val result = chain.getRandomVecWithProb(rand1)(3)
-    val expected = chain.getVecWithProb(rand2)(result.head, 3)
+    val expected = chain.getSeqWithProb(rand2)(result.head, 3)
 
     result shouldEqual expected
   }
@@ -85,6 +86,45 @@ class MarkovChainTest extends FlatSpec with Matchers {
     val chain1 = MarkovChain[String].fromSeq(List("a", "b", "c"))
     val chain2 = MarkovChain[String] + ("a" -> "b") + ("b" -> "c")
 
-    chain1.getVec("a", 3) shouldEqual chain2.getVec("a", 3)
+    chain1.getSeq("a", 3) shouldEqual chain2.getSeq("a", 3)
+  }
+
+  "fromSeq" should "construct chain" in {
+    val chain = MarkovChain[String]
+      .fromSeq(List("a", "b", "c"))
+      .fromSeq(List("a", "b", "d", "e"))
+
+    (chain).data shouldEqual (HashMap(
+      "a" -> HashMap("b" -> 2),
+      "b" -> HashMap("c" -> 1, "d" -> 1),
+      "d" -> HashMap("e" -> 1)
+    ))
+  }
+
+  "++ / join simple" should "join two chains" in {
+    val chain1 = MarkovChain[String].fromSeq(List("a", "b", "c"))
+    val chain2 = MarkovChain[String].fromSeq(List("x", "y", "z"))
+    val expected = (HashMap(
+      "a" -> HashMap("b" -> 1),
+      "b" -> HashMap("c" -> 1),
+      "x" -> HashMap("y" -> 1),
+      "y" -> HashMap("z" -> 1)
+    ))
+
+    (chain1 ++ chain2).data shouldEqual expected
+    (chain1 join chain2).data shouldEqual expected
+  }
+
+  "++ / join complex" should "join two chains" in {
+    val chain1 = MarkovChain[String].fromSeq(List("a", "b", "c"))
+    val chain2 = MarkovChain[String].fromSeq(List("a", "b", "d", "e"))
+    val expected = HashMap(
+      "a" -> HashMap("b" -> 2),
+      "b" -> HashMap("c" -> 1, "d" -> 1),
+      "d" -> HashMap("e" -> 1)
+    )
+
+    (chain1 ++ chain2).data shouldEqual expected
+    (chain1 join chain2).data shouldEqual expected
   }
 }

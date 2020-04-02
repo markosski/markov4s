@@ -2,31 +2,30 @@ package markov4s
 
 import scala.collection.immutable.HashMap
 import scala.annotation.tailrec
-import MarkovChain.{Counter, Data}
+import MarkovChain.Data
 
-final case class MarkovNode(count: Int, prob: Double)
+// final case class MarkovNode(count: Int, prob: Double)
 
 object MarkovChain {
-  type Data[A] = HashMap[A, HashMap[A, MarkovNode]]
-  type Counter[A] = HashMap[A, Int]
+  type Data[A] = HashMap[A, HashMap[A, Int]]
+  // type Counter[A] = HashMap[A, Int]
 
   /**
     * Primary access point to construct empty MarkovChain.
     */
   def apply[A]: MarkovChain[A] =
     MarkovChain(
-      HashMap[A, HashMap[A, MarkovNode]](),
-      HashMap[A, Int](),
+      HashMap[A, HashMap[A, Int]]()
     )
 
-  def sequenceRandomVec[A](iterations: Int, vecSize: Int, f: Int => Vector[A]): List[Vector[A]] = {
+  def sequenceRandom[A](iterations: Int, vecSize: Int, f: Int => Vector[A]): List[Vector[A]] = {
     val result = (0 to iterations).scanLeft(Vector[A]()) { (a, b) => 
       f(vecSize)
     }
     result.tail.toList
   }
 
-  def sequenceVec[A](iterations: Int, vecSize: Int, elem: A, f: (A, Int) => Vector[A]): List[Vector[A]] = {
+  def sequence[A](iterations: Int, vecSize: Int, elem: A, f: (A, Int) => Vector[A]): List[Vector[A]] = {
     val result = (0 to iterations).scanLeft(Vector[A]()) { (a, b) => 
       f(elem, vecSize)
     }
@@ -34,7 +33,7 @@ object MarkovChain {
   }
 }
 
-final case class MarkovChain[A](data: Data[A], counter: Counter[A]) {
+final case class MarkovChain[A](data: Data[A]) {
   /**
     * Add single element.
     */
@@ -42,15 +41,27 @@ final case class MarkovChain[A](data: Data[A], counter: Counter[A]) {
     val newData: Data[A] = data.get(a) match {
       case Some(elemA) => {
         elemA.get(b) match {
-          case Some(elemB)  => data + (a -> (elemA + (b -> MarkovNode(elemB.count + 1, 0.0))))
-          case None		      => data + (a -> (elemA + (b -> MarkovNode(1, 0.0))))
+          case Some(elemB)  => data + (a -> (elemA + (b -> (elemB + 1))))
+          case None		      => data + (a -> (elemA + (b -> 1)))
         }
       }
-      case None => data + (a -> HashMap(b -> MarkovNode(1, 0.0)))
+      case None => data + (a -> HashMap(b -> 1))
     }
-    val newCounter = counter + (a -> (counter.getOrElse(a, 0) + 1))
 
-    MarkovChain(updateNodes(a, newData, newCounter), newCounter)
+    MarkovChain(newData)
+  }
+
+  def join(that: MarkovChain[A]): MarkovChain[A] = {
+    val (lhs, rhs) = if (data.size > that.data.size) (data, that.data) else (that.data, data)
+
+    val newData = rhs.keys.toList.foldLeft(lhs) { (ch, k) =>
+      ch.get(k) match {
+        case Some(chain) => ch + (k -> chain.merged(rhs(k)) { (a, b) => (a._1, a._2 + b._2) } )
+        case None => ch + (k -> rhs(k))
+      }
+    }
+
+    MarkovChain(newData)
   }
 
   /**
@@ -58,22 +69,19 @@ final case class MarkovChain[A](data: Data[A], counter: Counter[A]) {
     */
   def +(pair: (A, A)): MarkovChain[A] = put(pair._1, pair._2)
 
+  def ++(markovChain: MarkovChain[A]): MarkovChain[A] = join(markovChain)
+
   def fromSeq(xs: Seq[A]): MarkovChain[A] = {
     xs.sliding(2).foldLeft(this)((a, b) => a.put(b.head, b.tail.head))
   }
 
-  /**
-    * Update all elements and their probability values.
-    */
-  private def updateNodes(key: A, data: Data[A], counters: Counter[A]): Data[A] = {
-    data.get(key) match {
-      case Some(el) => {
-        val newElem = el.keys.toList.foldLeft(el) { (e, x) =>
-          e + (x -> MarkovNode(e(x).count, e(x).count / counters(key).toDouble))
-        }
-        data + (key -> newElem)
-      }
-      case None => data
+  def calculateChainKeyCount(chain: HashMap[A, Int]): Int = {
+    chain.values.sum
+  }
+
+  def calculateChainProb(key: A, chain: HashMap[A, Int]): HashMap[A, Double] = {
+    chain.keys.toList.foldLeft(HashMap[A, Double]()) { (ch, k) => 
+      ch + (k -> chain(k) / calculateChainKeyCount(chain).toDouble)
     }
   }
 
@@ -84,13 +92,14 @@ final case class MarkovChain[A](data: Data[A], counter: Counter[A]) {
     val nextDouble: Double = rand.nextDouble
     data.get(a) match {
       case Some(elemA) => {
-        val els = elemA.toList.sortBy(_._2.prob)
+        val probs = calculateChainProb(a, elemA)
+        val els = probs.toList.sortBy(_._2)
 
         var result = a
         var prev = 0.0
         for (el <- els) {
-          if (nextDouble >= prev && nextDouble <= prev + el._2.prob) result = el._1
-          prev = prev + el._2.prob
+          if (nextDouble >= prev && nextDouble <= prev + el._2) result = el._1
+          prev = prev + el._2
         }
 
         Some(result)
@@ -105,7 +114,8 @@ final case class MarkovChain[A](data: Data[A], counter: Counter[A]) {
   def getTop(a: A, num: Int): List[A] = {
     data.get(a) match {
       case Some(elemA) => {
-        elemA.toList.sortBy(_._2.prob).reverse.take(num).map(x => x._1)
+        val probs = calculateChainProb(a, elemA)
+        probs.toList.sortBy(_._2).reverse.take(num).map(x => x._1)
       }
       case None => List[A]()
     }
@@ -121,7 +131,7 @@ final case class MarkovChain[A](data: Data[A], counter: Counter[A]) {
     */
   def getRandomVecWithProb(rand: RandLike)(atMost: Int): Vector[A] = {
     val elem = getRandomElement(rand)
-    getVecWithProb(rand)(elem, atMost)
+    getSeqWithProb(rand)(elem, atMost)
   }
 
   /**
@@ -129,7 +139,7 @@ final case class MarkovChain[A](data: Data[A], counter: Counter[A]) {
     */
   def getRandomVec(rand: RandLike)(atMost: Int): Vector[A] = {
     val elem = getRandomElement(rand)
-    getVec(elem, atMost)
+    getSeq(elem, atMost)
   }
 
   private def getRandomElement(rand: RandLike): A = {
@@ -141,7 +151,7 @@ final case class MarkovChain[A](data: Data[A], counter: Counter[A]) {
   /**
     * Get sequence of elements using probability distribution.
     */
-  def getVecWithProb(rand: RandLike)(a: A, atMost: Int): Vector[A] = {
+  def getSeqWithProb(rand: RandLike)(a: A, atMost: Int): Vector[A] = {
     if (atMost > 0)
       doInnerVec(a, Vector[A](a), math.max(0, atMost-1))(getWithProb(rand))
     else
@@ -151,7 +161,7 @@ final case class MarkovChain[A](data: Data[A], counter: Counter[A]) {
   /**
     * Get sequence of elements using highest probability value.
     */
-  def getVec(a: A, atMost: Int): Vector[A] = getVecWith(a, atMost)(get)
+  def getSeq(a: A, atMost: Int): Vector[A] = getVecWith(a, atMost)(get)
 
   /**
    * Produce function with no-op RNG. Used to allow composition in doInnverVec.
