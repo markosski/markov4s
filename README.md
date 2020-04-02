@@ -6,6 +6,15 @@ Markov4s is a small library that implements MarkovChain data structure.
 Package location:
 https://bintray.com/markosski/maven/markov4s
 
+```
+<dependency>
+  <groupId>markosski</groupId>
+  <artifactId>markov4s_2.12</artifactId>
+  <version>0.2.0</version>
+  <type>pom</type>
+</dependency>
+```
+
 Usage:
 
 ```
