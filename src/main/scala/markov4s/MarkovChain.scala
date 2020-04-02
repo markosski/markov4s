@@ -4,8 +4,6 @@ import scala.collection.immutable.HashMap
 import scala.annotation.tailrec
 import MarkovChain.Data
 
-// final case class MarkovNode(count: Int, prob: Double)
-
 object MarkovChain {
   type Data[A] = HashMap[A, HashMap[A, Int]]
   // type Counter[A] = HashMap[A, Int]
@@ -35,7 +33,7 @@ object MarkovChain {
 
 final case class MarkovChain[A](data: Data[A]) {
   /**
-    * Add single element.
+    * Add single element to the chain
     */
   def put(a: A, b: A): MarkovChain[A] = {
     val newData: Data[A] = data.get(a) match {
@@ -51,6 +49,9 @@ final case class MarkovChain[A](data: Data[A]) {
     MarkovChain(newData)
   }
 
+  /**
+    * Combine two instances of MarkovChain
+    */
   def join(that: MarkovChain[A]): MarkovChain[A] = {
     val (lhs, rhs) = if (data.size > that.data.size) (data, that.data) else (that.data, data)
 
@@ -65,24 +66,20 @@ final case class MarkovChain[A](data: Data[A]) {
   }
 
   /**
-    * Alias for `put`.
+    * Alias for `put`
     */
   def +(pair: (A, A)): MarkovChain[A] = put(pair._1, pair._2)
 
+  /**
+    * Alias for `join`
+    */
   def ++(markovChain: MarkovChain[A]): MarkovChain[A] = join(markovChain)
 
+  /**
+    * Create chain from sequence of items. Relationship will be created by making connections between each consecutive item.
+    */
   def fromSeq(xs: Seq[A]): MarkovChain[A] = {
     xs.sliding(2).foldLeft(this)((a, b) => a.put(b.head, b.tail.head))
-  }
-
-  def calculateChainKeyCount(chain: HashMap[A, Int]): Int = {
-    chain.values.sum
-  }
-
-  def calculateChainProb(key: A, chain: HashMap[A, Int]): HashMap[A, Double] = {
-    chain.keys.toList.foldLeft(HashMap[A, Double]()) { (ch, k) => 
-      ch + (k -> chain(k) / calculateChainKeyCount(chain).toDouble)
-    }
   }
 
   /**
@@ -129,7 +126,7 @@ final case class MarkovChain[A](data: Data[A]) {
   /**
     * Get sequence of elements using probability distribution starting with random element.
     */
-  def getRandomVecWithProb(rand: RandLike)(atMost: Int): Vector[A] = {
+  def getRandomSeqWithProb(rand: RandLike)(atMost: Int): Vector[A] = {
     val elem = getRandomElement(rand)
     getSeqWithProb(rand)(elem, atMost)
   }
@@ -137,7 +134,7 @@ final case class MarkovChain[A](data: Data[A]) {
   /**
     * Get sequence of elements selecting highest probability elements starting with random element.
     */
-  def getRandomVec(rand: RandLike)(atMost: Int): Vector[A] = {
+  def getRandomSeq(rand: RandLike)(atMost: Int): Vector[A] = {
     val elem = getRandomElement(rand)
     getSeq(elem, atMost)
   }
@@ -153,7 +150,7 @@ final case class MarkovChain[A](data: Data[A]) {
     */
   def getSeqWithProb(rand: RandLike)(a: A, atMost: Int): Vector[A] = {
     if (atMost > 0)
-      doInnerVec(a, Vector[A](a), math.max(0, atMost-1))(getWithProb(rand))
+      doInnerSeq(a, Vector[A](a), math.max(0, atMost-1))(getWithProb(rand))
     else
       Vector[A]()
   }
@@ -161,29 +158,39 @@ final case class MarkovChain[A](data: Data[A]) {
   /**
     * Get sequence of elements using highest probability value.
     */
-  def getSeq(a: A, atMost: Int): Vector[A] = getVecWith(a, atMost)(get)
+  def getSeq(a: A, atMost: Int): Vector[A] = getSeqWith(a, atMost)(get)
+
+  private def calculateChainKeyCount(chain: HashMap[A, Int]): Int = {
+    chain.values.sum
+  }
+
+  private def calculateChainProb(key: A, chain: HashMap[A, Int]): HashMap[A, Double] = {
+    chain.keys.toList.foldLeft(HashMap[A, Double]()) { (ch, k) => 
+      ch + (k -> chain(k) / calculateChainKeyCount(chain).toDouble)
+    }
+  }
 
   /**
-   * Produce function with no-op RNG. Used to allow composition in doInnverVec.
+   * Produce function with no-op RNG. Used to allow composition in doInnverSeq.
    */
   private def liftNoOp(f: A => Option[A]) = {
     (a: A) => f(a)
   }
 
-  private def getVecWith(a: A, atMost: Int)(f: A => Option[A]): Vector[A] = {
+  private def getSeqWith(a: A, atMost: Int)(f: A => Option[A]): Vector[A] = {
     if (atMost > 0)
-      doInnerVec(a, Vector[A](a), math.max(0, atMost-1))(liftNoOp(f))
+      doInnerSeq(a, Vector[A](a), math.max(0, atMost-1))(liftNoOp(f))
     else
       Vector[A]()
   }
 
   @tailrec
-  private def doInnerVec(a: A, as: Vector[A], num: Int)(f: A => Option[A]): Vector[A] = {
+  private def doInnerSeq(a: A, as: Vector[A], num: Int)(f: A => Option[A]): Vector[A] = {
     num match {
       case 0 => as
       case _ => {
         f(a) match {
-          case Some(a1) => doInnerVec(a1, as :+ a1, num-1)(f)
+          case Some(a1) => doInnerSeq(a1, as :+ a1, num-1)(f)
           case None => as
         }
       }
