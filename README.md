@@ -1,9 +1,19 @@
 
-# Markov4s [![Build Status](https://travis-ci.org/markosski/cloudsync.svg?branch=master)](https://travis-ci.org/markosski/markov4s)
+# Markov4s [![Build Status](https://travis-ci.org/markosski/cloudsync.svg?branch=master)](https://travis-ci.org/markosski/markov4s) [ ![Download](https://api.bintray.com/packages/markosski/maven/markov4s/images/download.svg) ](https://bintray.com/markosski/maven/markov4s/_latestVersion)
+
 Markov4s is a small library that implements MarkovChain data structure.
 
 Package location:
 https://bintray.com/markosski/maven/markov4s
+
+```
+<dependency>
+  <groupId>markosski</groupId>
+  <artifactId>markov4s_2.12</artifactId>
+  <version>0.2.0</version>
+  <type>pom</type>
+</dependency>
+```
 
 Usage:
 
