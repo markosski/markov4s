@@ -126,15 +126,15 @@ final case class MarkovChain[A](data: Data[A]) {
   /**
     * Get sequence of elements using probability distribution starting with random element.
     */
-  def getRandomSeqWithProb(rand: RandLike)(atMost: Int): Vector[A] = {
+  def getRandomSeqWithProb(atMost: Int)(implicit rand: RandLike): Vector[A] = {
     val elem = getRandomElement(rand)
-    getSeqWithProb(rand)(elem, atMost)
+    getSeqWithProb(elem, atMost)(rand)
   }
 
   /**
     * Get sequence of elements selecting highest probability elements starting with random element.
     */
-  def getRandomSeq(rand: RandLike)(atMost: Int): Vector[A] = {
+  def getRandomSeq(atMost: Int)(implicit rand: RandLike): Vector[A] = {
     val elem = getRandomElement(rand)
     getSeq(elem, atMost)
   }
@@ -148,7 +148,7 @@ final case class MarkovChain[A](data: Data[A]) {
   /**
     * Get sequence of elements using probability distribution.
     */
-  def getSeqWithProb(rand: RandLike)(a: A, atMost: Int): Vector[A] = {
+  def getSeqWithProb(a: A, atMost: Int)(implicit rand: RandLike): Vector[A] = {
     if (atMost > 0)
       doInnerSeq(a, Vector[A](a), math.max(0, atMost-1))(getWithProb(rand))
     else

@@ -28,7 +28,8 @@ class MarkovChainTest extends FlatSpec with Matchers {
     ("c" -> "a")
 
     // Compare getRandomVec in terms of getVec
-    val result = chain.getRandomSeq(new Rand(1))(3)
+    implicit val rand = new Rand(1)
+    val result = chain.getRandomSeq(3)
     val expected = chain.getSeq(result.head, 3)
 
     result shouldEqual expected
@@ -45,8 +46,8 @@ class MarkovChainTest extends FlatSpec with Matchers {
     // Compare getRandomVec in terms of getVecWithProb
     val rand1 = new Rand(1)
     val rand2 = new Rand(1)
-    val result = chain.getRandomSeqWithProb(rand1)(3)
-    val expected = chain.getSeqWithProb(rand2)(result.head, 3)
+    val result = chain.getRandomSeqWithProb(3)(rand1)
+    val expected = chain.getSeqWithProb(result.head, 3)(rand2)
 
     result shouldEqual expected
   }
