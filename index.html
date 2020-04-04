@@ -64,10 +64,10 @@
 <p>We can randomize this where next selected words will be chosen based on their probability to occure.</p>
 
 <div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">implicit</span> <span class="k">val</span> <span class="nv">rand</span> <span class="k">=</span> <span class="nc">Rand</span><span class="o">()</span>
-<span class="c1">// rand: Rand = markov4s.Rand@3bbae9fe</span>
+<span class="c1">// rand: Rand = markov4s.Rand@29d7d3fd</span>
 
 <span class="nv">chain4</span><span class="o">.</span><span class="py">getSeqWithProb</span><span class="o">(</span><span class="s">"hello"</span><span class="o">,</span> <span class="mi">6</span><span class="o">)</span>
-<span class="c1">// res3: Vector[String] = Vector("hello", "John", "how", "are", "you", "?")</span>
+<span class="c1">// res3: Vector[String] = Vector("hello", "world", "how", "are", "you", "?")</span>
 </code></pre></div></div>
 <p>Note: This documentation is generated which may cause some code evaluations return different result.</p>
 </div></div></section><section class="technologies"><div class="container"><div class="row"></div></div></section></main><footer id="site-footer"><div class="container"><div class="row"><div class="col-xs-6"><p>markov4s is designed and developed by <a href="" target="_blank" rel="noopener noreferrer">com.github.markosski</a></p></div><div class="col-xs-6"><p class="text-right"><a href="https://github.com/markosski/markov4s.git" target="_blank" rel="noopener noreferrer"><span class="fa fa-github"></span>View on GitHub</a></p></div></div><div class="row"><div class="col-xs-6"><p>Website built with <a href="https://47degrees.github.io/sbt-microsites/" target="_blank" rel="noopener noreferrer">sbt-microsites</a> - © 2019 <a href="https://www.47deg.com/" target="_blank" rel="noopener noreferrer">47 Degrees</a></p></div></div></div></footer><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/markov4s/highlight/highlight.pack.js"></script><script>
