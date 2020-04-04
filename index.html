@@ -38,25 +38,26 @@
 
 <h2 id="create-from-sequence">Create from sequence</h2>
 <div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">chain4</span> <span class="k">=</span> <span class="nc">MarkovChain</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span>
-    <span class="o">.</span><span class="py">fromSeq</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="s">"hello"</span><span class="o">,</span> <span class="s">"world"</span><span class="o">,</span> <span class="s">"how"</span><span class="o">,</span> <span class="s">"are"</span><span class="o">,</span> <span class="s">"things"</span><span class="o">,</span> <span class="s">"?"</span><span class="o">))</span>
-    <span class="o">.</span><span class="py">fromSeq</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="s">"hello"</span><span class="o">,</span> <span class="s">"John"</span><span class="o">,</span> <span class="s">"how"</span><span class="o">,</span> <span class="s">"is"</span><span class="o">,</span> <span class="s">"life"</span><span class="o">,</span> <span class="s">"?"</span><span class="o">))</span>
-    <span class="o">.</span><span class="py">fromSeq</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="s">"hello"</span><span class="o">,</span> <span class="s">"John"</span><span class="o">,</span> <span class="s">"how"</span><span class="o">,</span> <span class="s">"are"</span><span class="o">,</span> <span class="s">"you"</span><span class="o">,</span> <span class="s">"?"</span><span class="o">))</span>
+    <span class="o">.</span><span class="py">fromSeq</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="s">"hello"</span><span class="o">,</span> <span class="s">"world"</span><span class="o">,</span> <span class="s">"how"</span><span class="o">,</span> <span class="s">"are"</span><span class="o">,</span> <span class="s">"you"</span><span class="o">))</span>
+    <span class="o">.</span><span class="py">fromSeq</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="s">"hello"</span><span class="o">,</span> <span class="s">"Susan"</span><span class="o">,</span> <span class="s">"how"</span><span class="o">,</span> <span class="s">"are"</span><span class="o">,</span> <span class="s">"things"</span><span class="o">))</span>
+    <span class="o">.</span><span class="py">fromSeq</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="s">"hello"</span><span class="o">,</span> <span class="s">"John"</span><span class="o">,</span> <span class="s">"how"</span><span class="o">,</span> <span class="s">"is"</span><span class="o">,</span> <span class="s">"life"</span><span class="o">))</span>
+    <span class="o">.</span><span class="py">fromSeq</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="s">"hello"</span><span class="o">,</span> <span class="s">"John"</span><span class="o">,</span> <span class="s">"how"</span><span class="o">,</span> <span class="s">"do"</span><span class="o">,</span> <span class="s">"you"</span><span class="o">,</span> <span class="s">"do"</span><span class="o">))</span>
 <span class="c1">// chain4: MarkovChain[String] = MarkovChain(</span>
 <span class="c1">//   Map(</span>
 <span class="c1">//     "John" -&gt; Map("how" -&gt; 2),</span>
 <span class="c1">//     "are" -&gt; Map("you" -&gt; 1, "things" -&gt; 1),</span>
 <span class="c1">//     "is" -&gt; Map("life" -&gt; 1),</span>
 <span class="c1">//     "world" -&gt; Map("how" -&gt; 1),</span>
-<span class="c1">//     "you" -&gt; Map("?" -&gt; 1),</span>
-<span class="c1">//     "how" -&gt; Map("are" -&gt; 2, "is" -&gt; 1),</span>
-<span class="c1">//     "things" -&gt; Map("?" -&gt; 1),</span>
-<span class="c1">//     "life" -&gt; Map("?" -&gt; 1),</span>
-<span class="c1">//     "hello" -&gt; Map("John" -&gt; 2, "world" -&gt; 1)</span>
+<span class="c1">//     "do" -&gt; Map("you" -&gt; 1),</span>
+<span class="c1">//     "you" -&gt; Map("do" -&gt; 1),</span>
+<span class="c1">//     "Susan" -&gt; Map("how" -&gt; 1),</span>
+<span class="c1">//     "how" -&gt; Map("are" -&gt; 2, "is" -&gt; 1, "do" -&gt; 1),</span>
+<span class="c1">//     "hello" -&gt; Map("John" -&gt; 2, "world" -&gt; 1, "Susan" -&gt; 1)</span>
 <span class="c1">//   )</span>
 <span class="c1">// )</span>
 
 <span class="nv">chain4</span><span class="o">.</span><span class="py">getSeq</span><span class="o">(</span><span class="s">"hello"</span><span class="o">,</span> <span class="mi">6</span><span class="o">)</span>
-<span class="c1">// res2: Vector[String] = Vector("hello", "John", "how", "are", "things", "?")</span>
+<span class="c1">// res2: Vector[String] = Vector("hello", "John", "how", "are", "things")</span>
 </code></pre></div></div>
 
 <p>As you can see from the output, new sentence was build using words with highest occurance.</p>
@@ -64,10 +65,10 @@
 <p>We can randomize this where next selected words will be chosen based on their probability to occure.</p>
 
 <div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">implicit</span> <span class="k">val</span> <span class="nv">rand</span> <span class="k">=</span> <span class="nc">Rand</span><span class="o">()</span>
-<span class="c1">// rand: Rand = markov4s.Rand@29d7d3fd</span>
+<span class="c1">// rand: Rand = markov4s.Rand@1a160ec</span>
 
 <span class="nv">chain4</span><span class="o">.</span><span class="py">getSeqWithProb</span><span class="o">(</span><span class="s">"hello"</span><span class="o">,</span> <span class="mi">6</span><span class="o">)</span>
-<span class="c1">// res3: Vector[String] = Vector("hello", "world", "how", "are", "you", "?")</span>
+<span class="c1">// res3: Vector[String] = Vector("hello", "John", "how", "are", "things")</span>
 </code></pre></div></div>
 <p>Note: This documentation is generated which may cause some code evaluations return different result.</p>
 </div></div></section><section class="technologies"><div class="container"><div class="row"></div></div></section></main><footer id="site-footer"><div class="container"><div class="row"><div class="col-xs-6"><p>markov4s is designed and developed by <a href="" target="_blank" rel="noopener noreferrer">com.github.markosski</a></p></div><div class="col-xs-6"><p class="text-right"><a href="https://github.com/markosski/markov4s.git" target="_blank" rel="noopener noreferrer"><span class="fa fa-github"></span>View on GitHub</a></p></div></div><div class="row"><div class="col-xs-6"><p>Website built with <a href="https://47degrees.github.io/sbt-microsites/" target="_blank" rel="noopener noreferrer">sbt-microsites</a> - © 2019 <a href="https://www.47deg.com/" target="_blank" rel="noopener noreferrer">47 Degrees</a></p></div></div></div></footer><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/markov4s/highlight/highlight.pack.js"></script><script>
