@@ -2,20 +2,17 @@
 layout: home
 title:  "Home"
 section: "home"
-technologies:
- - first:  ["Scala", "sbt-microsites plugin is completely written in Scala"]
- - second: ["SBT", "sbt-microsites plugin uses SBT and other sbt plugins to generate microsites easily"]
- - third:  ["Jekyll", "Jekyll allows for the transformation of plain text into static websites and blogs."]
+position: 1
 ---
 
 Markov4s is a small library that implements MarkovChain data structure.
 
 # Installation
 
-Packages is available on Bintray: https://bintray.com/markosski/maven/markov4s
+Packages is available on Bintray [https://bintray.com/markosski/maven/markov4s](https://bintray.com/markosski/maven/markov4s)
 
 ```scala
-libraryDependencies += "com.marcinkossakowski" % "markov4s_2.12" % "0.2.0"
+libraryDependencies += "com.github.markosski" % "markov4s_2.12" % "0.2.0"
 ```
 
 # Usage
@@ -58,4 +55,4 @@ implicit val rand = Rand()
 
 chain4.getSeqWithProb("hello", 6)
 ```
-Note: This documentation is generated and each time outcome may be different.
+Note: This documentation is generated which may cause some code evaluations return different result.

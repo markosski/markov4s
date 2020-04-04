@@ -3,13 +3,16 @@ lazy val root = (project in file("."))
   .enablePlugins(MicrositesPlugin, SiteScaladocPlugin, GhpagesPlugin)
   .settings(
     inThisBuild(List(
-      organization := "marcinkossakowski.com",
+      organization := "com.github.markosski",
       scalaVersion := "2.12.11",
       version      := "0.2.0"
     )),
     git.remoteRepo := "git@github.com:markosski/markov4s.git",
     micrositeUrl := "https://markosski.github.io",
-    // micrositeBaseUrl := "/markov4s",
+    micrositeDocumentationUrl := "/markov4s/latest/api/markov4s/MarkovChain.html",
+    micrositeBaseUrl := "/markov4s",
+    micrositeTwitter := "@martez81",
+    micrositeTheme := "pattern",
     bintrayReleaseOnPublish in ThisBuild := false,
     licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
     name := "markov4s",

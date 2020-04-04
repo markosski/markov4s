@@ -18,4 +18,4 @@ chain1.getSeq("a", 4)
 // res0: Vector[String] = Vector("a", "b", "c", "d"))
 ```
 
-For more unsage and example please see documentation at https://markosski.github.io/markov4s
+For more usage and example please see documentation at https://markosski.github.io/markov4s

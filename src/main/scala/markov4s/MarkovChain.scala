@@ -6,7 +6,6 @@ import MarkovChain.Data
 
 object MarkovChain {
   type Data[A] = HashMap[A, HashMap[A, Int]]
-  // type Counter[A] = HashMap[A, Int]
 
   /**
     * Primary access point to construct empty MarkovChain.
