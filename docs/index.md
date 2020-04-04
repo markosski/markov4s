@@ -39,9 +39,10 @@ val chain3 = MarkovChain[String] + ("c" -> "d")
 ## Create from sequence
 ```scala mdoc
 val chain4 = MarkovChain[String]
-    .fromSeq(List("hello", "world", "how", "are", "things", "?"))
-    .fromSeq(List("hello", "John", "how", "is", "life", "?"))
-    .fromSeq(List("hello", "John", "how", "are", "you", "?"))
+    .fromSeq(List("hello", "world", "how", "are", "you"))
+    .fromSeq(List("hello", "Susan", "how", "are", "things"))
+    .fromSeq(List("hello", "John", "how", "is", "life"))
+    .fromSeq(List("hello", "John", "how", "do", "you", "do"))
 
 chain4.getSeq("hello", 6)
 ```
@@ -53,6 +54,8 @@ We can randomize this where next selected words will be chosen based on their pr
 ```scala mdoc
 implicit val rand = Rand()
 
+chain4.getSeqWithProb("hello", 6)
+chain4.getSeqWithProb("hello", 6)
 chain4.getSeqWithProb("hello", 6)
 ```
 Note: This documentation is generated which may cause some code evaluations return different result.

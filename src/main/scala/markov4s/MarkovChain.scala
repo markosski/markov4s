@@ -172,9 +172,7 @@ final case class MarkovChain[A](data: Data[A]) {
   /**
    * Produce function with no-op RNG. Used to allow composition in doInnverSeq.
    */
-  private def liftNoOp(f: A => Option[A]) = {
-    (a: A) => f(a)
-  }
+  private def liftNoOp(f: A => Option[A]) = (a: A) => f(a)
 
   private def getSeqWith(a: A, atMost: Int)(f: A => Option[A]): Vector[A] = {
     if (atMost > 0)

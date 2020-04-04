@@ -10,6 +10,7 @@ lazy val root = (project in file("."))
     git.remoteRepo := "git@github.com:markosski/markov4s.git",
     micrositeUrl := "https://markosski.github.io",
     micrositeDocumentationUrl := "/markov4s/latest/api/markov4s/MarkovChain.html",
+    micrositeAnalyticsToken := "UA-162748963-1",
     micrositeBaseUrl := "/markov4s",
     micrositeTwitter := "@martez81",
     micrositeTheme := "pattern",

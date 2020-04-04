@@ -26,10 +26,9 @@ val chain = MarkovChain[String].fromSeq(data)
 
 ```scala mdoc
 implicit val rand = Rand()
-chain.getRandomSeqWithProb(100)
-    .mkString(" ")
-    .replace(" ,", ",")
-    .replace(" .", ".")
+chain.getRandomSeqWithProb(100).mkString(" ").replace(" ,", ",").replace(" .", ".")
+chain.getRandomSeqWithProb(100).mkString(" ").replace(" ,", ",").replace(" .", ".")
+chain.getRandomSeqWithProb(100).mkString(" ").replace(" ,", ",").replace(" .", ".")
 ```
 
 
