@@ -78,9 +78,9 @@ class MarkovChainTest extends FlatSpec with Matchers {
     chain.getTop("a", 1) shouldEqual List("a")
     chain.getTop("b", 1) shouldEqual List("b")
 
-    val rand = new Rand(1)
-    chain.getWithProb(rand)("a") shouldEqual Some("a")
-    chain.getWithProb(rand)("b") shouldEqual Some("b")
+    implicit val rand = new Rand(1)
+    chain.getWithProb("a") shouldEqual Some("a")
+    chain.getWithProb("b") shouldEqual Some("b")
   }
 
   ".fromSeq and .put operators" should "yield the same result." in {

@@ -84,7 +84,7 @@ final case class MarkovChain[A](data: Data[A]) {
   /**
     * Get single item from probability distribution.
     */
-  def getWithProb(rand: RandLike)(a: A): Option[A] = {
+  def getWithProb(a: A)(implicit rand: RandLike): Option[A] = {
     val nextDouble: Double = rand.nextDouble
     data.get(a) match {
       case Some(elemA) => {
@@ -149,7 +149,7 @@ final case class MarkovChain[A](data: Data[A]) {
     */
   def getSeqWithProb(a: A, atMost: Int)(implicit rand: RandLike): Vector[A] = {
     if (atMost > 0)
-      doInnerSeq(a, Vector[A](a), math.max(0, atMost-1))(getWithProb(rand))
+      doInnerSeq(a, Vector[A](a), math.max(0, atMost-1))(getWithProb)
     else
       Vector[A]()
   }
