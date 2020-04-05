@@ -6,7 +6,11 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 
 ga('create', 'UA-162748963-1' , 'auto');
 ga('send', 'pageview');
-      </script></head><body><header id="site-header"><div class="navbar-wrapper"><div class="container"><div class="row"><div class="col-xs-6"><a href="/markov4s/" class="brand"><div class="icon-wrapper"><span>markov4s</span></div></a></div><div class="col-xs-6"><nav class="text-right"><ul class=""><li><a href="https://github.com/markosski/markov4s.git" target="_blank" rel="noopener noreferrer"><i class="fa fa-github"></i><span class="hidden-xs">GitHub</span></a></li><li><a href="/markov4s/latest/api/markov4s/MarkovChain.html"><i class="fa fa-file-text"></i><span class="hidden-xs">Documentation</span></a></li></ul></nav></div></div></div></div><div class="jumbotron"><div class="container"><h1 class="text-center">markov4s</h1><h2></h2><p class="text-center"><a href="https://github.com/markosski/markov4s.git" target="_blank" rel="noopener noreferrer" class="btn btn-outline-inverse">View on GitHub</a></p></div></div><div id="horizontal-menu"><ul class="horizontal-nav"><li><a class=" active " href="/markov4s/">Home</a></li><li><a class="" href="/markov4s/examples.html">Examples</a></li></ul></div></header><main id="site-main"><section class="use"><div class="container"><div id="content"><p>Markov4s is a small library that implements MarkovChain data structure.</p>
+      </script></head><body><header id="site-header"><div class="navbar-wrapper"><div class="container"><div class="row"><div class="col-xs-6"><a href="/markov4s/" class="brand"><div class="icon-wrapper"><span>markov4s</span></div></a></div><div class="col-xs-6"><nav class="text-right"><ul class=""><li><a href="https://github.com/markosski/markov4s.git" target="_blank" rel="noopener noreferrer"><i class="fa fa-github"></i><span class="hidden-xs">GitHub</span></a></li><li><a href="/markov4s/latest/api/markov4s/MarkovChain.html"><i class="fa fa-file-text"></i><span class="hidden-xs">Documentation</span></a></li></ul></nav></div></div></div></div><div class="jumbotron"><div class="container"><h1 class="text-center">markov4s</h1><h2></h2><p class="text-center"><a href="https://github.com/markosski/markov4s.git" target="_blank" rel="noopener noreferrer" class="btn btn-outline-inverse">View on GitHub</a></p></div></div><div id="horizontal-menu"><ul class="horizontal-nav"><li><a class=" active " href="/markov4s/">Home</a></li><li><a class="" href="/markov4s/usage.html">Basic Usage</a></li><li><a class="" href="/markov4s/text_gen.html">Text Generation</a></li></ul></div></header><main id="site-main"><section class="use"><div class="container"><div id="content"><h1 id="markov4s----">Markov4s <a href="https://travis-ci.org/markosski/markov4s"><img src="https://travis-ci.org/markosski/cloudsync.svg?branch=master" alt="Build Status" /></a> <a href="https://bintray.com/markosski/maven/markov4s/_latestVersion"> <img src="https://api.bintray.com/packages/markosski/maven/markov4s/images/download.svg" alt="Download" /> </a></h1>
+
+<p>Markov4s is a small library that implements MarkovChain data structure.</p>
+
+<p>Website: <a href="https://markosski.github.io/markov4s/">https://markosski.github.io/markov4s/</a></p>
 
 <h1 id="installation">Installation</h1>
 
@@ -15,74 +19,6 @@ ga('send', 'pageview');
 <div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">libraryDependencies</span> <span class="o">+=</span> <span class="s">"com.github.markosski"</span> <span class="o">%</span> <span class="s">"markov4s_2.12"</span> <span class="o">%</span> <span class="s">"0.2.0"</span>
 </code></pre></div></div>
 
-<h1 id="usage">Usage</h1>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">markov4s._</span>
-
-<span class="k">val</span> <span class="nv">chain</span> <span class="k">=</span> <span class="nc">MarkovChain</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span>
-<span class="c1">// chain: MarkovChain[String] = MarkovChain(Map())</span>
-<span class="k">val</span> <span class="nv">chain1</span> <span class="k">=</span> <span class="n">chain</span> <span class="o">+</span> <span class="o">(</span><span class="s">"a"</span> <span class="o">-&gt;</span> <span class="s">"b"</span><span class="o">)</span> <span class="o">+</span> <span class="o">(</span><span class="s">"b"</span> <span class="o">-&gt;</span> <span class="s">"c"</span><span class="o">)</span> <span class="o">+</span> <span class="o">(</span><span class="s">"c"</span> <span class="o">-&gt;</span> <span class="s">"d"</span><span class="o">)</span>
-<span class="c1">// chain1: MarkovChain[String] = MarkovChain(</span>
-<span class="c1">//   Map("a" -&gt; Map("b" -&gt; 1), "b" -&gt; Map("c" -&gt; 1), "c" -&gt; Map("d" -&gt; 1))</span>
-<span class="c1">// )</span>
-
-<span class="c1">// get sequence of items starting with item "a", return at most 4 items</span>
-<span class="nv">chain1</span><span class="o">.</span><span class="py">getSeq</span><span class="o">(</span><span class="s">"a"</span><span class="o">,</span> <span class="mi">4</span><span class="o">)</span>
-<span class="c1">// res0: Vector[String] = Vector("a", "b", "c", "d")</span>
-</code></pre></div></div>
-
-<h2 id="join-chains">Join chains</h2>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">chain2</span> <span class="k">=</span> <span class="nc">MarkovChain</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="o">+</span> <span class="o">(</span><span class="s">"a"</span> <span class="o">-&gt;</span> <span class="s">"b"</span><span class="o">)</span> <span class="o">+</span> <span class="o">(</span><span class="s">"b"</span> <span class="o">-&gt;</span> <span class="s">"c"</span><span class="o">)</span>
-<span class="c1">// chain2: MarkovChain[String] = MarkovChain(</span>
-<span class="c1">//   Map("a" -&gt; Map("b" -&gt; 1), "b" -&gt; Map("c" -&gt; 1))</span>
-<span class="c1">// )</span>
-<span class="k">val</span> <span class="nv">chain3</span> <span class="k">=</span> <span class="nc">MarkovChain</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="o">+</span> <span class="o">(</span><span class="s">"c"</span> <span class="o">-&gt;</span> <span class="s">"d"</span><span class="o">)</span>
-<span class="c1">// chain3: MarkovChain[String] = MarkovChain(Map("c" -&gt; Map("d" -&gt; 1)))</span>
-
-<span class="o">(</span><span class="n">chain2</span> <span class="o">++</span> <span class="n">chain3</span><span class="o">).</span><span class="py">getSeq</span><span class="o">(</span><span class="s">"a"</span><span class="o">,</span> <span class="mi">4</span><span class="o">)</span>
-<span class="c1">// res1: Vector[String] = Vector("a", "b", "c", "d")</span>
-</code></pre></div></div>
-
-<h2 id="create-from-sequence">Create from sequence</h2>
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">chain4</span> <span class="k">=</span> <span class="nc">MarkovChain</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span>
-    <span class="o">.</span><span class="py">fromSeq</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="s">"hello"</span><span class="o">,</span> <span class="s">"world"</span><span class="o">,</span> <span class="s">"how"</span><span class="o">,</span> <span class="s">"are"</span><span class="o">,</span> <span class="s">"you"</span><span class="o">))</span>
-    <span class="o">.</span><span class="py">fromSeq</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="s">"hello"</span><span class="o">,</span> <span class="s">"Susan"</span><span class="o">,</span> <span class="s">"how"</span><span class="o">,</span> <span class="s">"are"</span><span class="o">,</span> <span class="s">"things"</span><span class="o">))</span>
-    <span class="o">.</span><span class="py">fromSeq</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="s">"hello"</span><span class="o">,</span> <span class="s">"John"</span><span class="o">,</span> <span class="s">"how"</span><span class="o">,</span> <span class="s">"is"</span><span class="o">,</span> <span class="s">"life"</span><span class="o">))</span>
-    <span class="o">.</span><span class="py">fromSeq</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="s">"hello"</span><span class="o">,</span> <span class="s">"John"</span><span class="o">,</span> <span class="s">"how"</span><span class="o">,</span> <span class="s">"do"</span><span class="o">,</span> <span class="s">"you"</span><span class="o">,</span> <span class="s">"do"</span><span class="o">))</span>
-<span class="c1">// chain4: MarkovChain[String] = MarkovChain(</span>
-<span class="c1">//   Map(</span>
-<span class="c1">//     "John" -&gt; Map("how" -&gt; 2),</span>
-<span class="c1">//     "are" -&gt; Map("you" -&gt; 1, "things" -&gt; 1),</span>
-<span class="c1">//     "is" -&gt; Map("life" -&gt; 1),</span>
-<span class="c1">//     "world" -&gt; Map("how" -&gt; 1),</span>
-<span class="c1">//     "do" -&gt; Map("you" -&gt; 1),</span>
-<span class="c1">//     "you" -&gt; Map("do" -&gt; 1),</span>
-<span class="c1">//     "Susan" -&gt; Map("how" -&gt; 1),</span>
-<span class="c1">//     "how" -&gt; Map("are" -&gt; 2, "is" -&gt; 1, "do" -&gt; 1),</span>
-<span class="c1">//     "hello" -&gt; Map("John" -&gt; 2, "world" -&gt; 1, "Susan" -&gt; 1)</span>
-<span class="c1">//   )</span>
-<span class="c1">// )</span>
-
-<span class="nv">chain4</span><span class="o">.</span><span class="py">getSeq</span><span class="o">(</span><span class="s">"hello"</span><span class="o">,</span> <span class="mi">6</span><span class="o">)</span>
-<span class="c1">// res2: Vector[String] = Vector("hello", "John", "how", "are", "things")</span>
-</code></pre></div></div>
-
-<p>As you can see from the output, new sentence was build using words with highest occurance.</p>
-
-<p>We can randomize this where next selected words will be chosen based on their probability to occure.</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">implicit</span> <span class="k">val</span> <span class="nv">rand</span> <span class="k">=</span> <span class="nc">Rand</span><span class="o">()</span>
-<span class="c1">// rand: Rand = markov4s.Rand@7dc96fe7</span>
-
-<span class="nv">chain4</span><span class="o">.</span><span class="py">getSeqWithProb</span><span class="o">(</span><span class="s">"hello"</span><span class="o">,</span> <span class="mi">6</span><span class="o">)</span>
-<span class="c1">// res3: Vector[String] = Vector("hello", "John", "how", "are", "you", "do")</span>
-<span class="nv">chain4</span><span class="o">.</span><span class="py">getSeqWithProb</span><span class="o">(</span><span class="s">"hello"</span><span class="o">,</span> <span class="mi">6</span><span class="o">)</span>
-<span class="c1">// res4: Vector[String] = Vector("hello", "John", "how", "is", "life")</span>
-<span class="nv">chain4</span><span class="o">.</span><span class="py">getSeqWithProb</span><span class="o">(</span><span class="s">"hello"</span><span class="o">,</span> <span class="mi">6</span><span class="o">)</span>
-<span class="c1">// res5: Vector[String] = Vector("hello", "John", "how", "are", "things")</span>
-</code></pre></div></div>
-<p>Note: This documentation is generated which may cause some code evaluations return different result.</p>
 </div></div></section><section class="technologies"><div class="container"><div class="row"></div></div></section></main><footer id="site-footer"><div class="container"><div class="row"><div class="col-xs-6"><p>markov4s is designed and developed by <a href="" target="_blank" rel="noopener noreferrer">com.github.markosski</a></p></div><div class="col-xs-6"><p class="text-right"><a href="https://github.com/markosski/markov4s.git" target="_blank" rel="noopener noreferrer"><span class="fa fa-github"></span>View on GitHub</a></p></div></div><div class="row"><div class="col-xs-6"><p>Website built with <a href="https://47degrees.github.io/sbt-microsites/" target="_blank" rel="noopener noreferrer">sbt-microsites</a> - © 2019 <a href="https://www.47deg.com/" target="_blank" rel="noopener noreferrer">47 Degrees</a></p></div></div></div></footer><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/markov4s/highlight/highlight.pack.js"></script><script>
 // For all code blocks, copy the language from the containing div
 // to the inner code tag (where hljs expects it to be)
