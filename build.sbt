@@ -1,3 +1,4 @@
+import microsites.{ExtraMdFileConfig}
 
 lazy val root = (project in file("."))
   .enablePlugins(MicrositesPlugin, SiteScaladocPlugin, GhpagesPlugin)
@@ -14,6 +15,13 @@ lazy val root = (project in file("."))
     micrositeBaseUrl := "/markov4s",
     micrositeTwitter := "@martez81",
     micrositeTheme := "pattern",
+    micrositeExtraMdFiles := Map(
+      file("README.md") -> ExtraMdFileConfig(
+        "index.md",
+        "home",
+        Map("layout" -> "home", "title" -> "Home", "section" -> "home", "position" -> "1")
+      )),
+    micrositeExtraMdFilesOutput := (resourceManaged in Compile).value / "jekyll",
     bintrayReleaseOnPublish in ThisBuild := false,
     licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
     name := "markov4s",

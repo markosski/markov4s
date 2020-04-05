@@ -1,21 +1,12 @@
 ---
-layout: home
-title:  "Home"
-section: "home"
+layout: page
+title: "Basic Usage"
+section: "usage"
 position: 1
 ---
 
-Markov4s is a small library that implements MarkovChain data structure.
 
-# Installation
-
-Packages is available on Bintray [https://bintray.com/markosski/maven/markov4s](https://bintray.com/markosski/maven/markov4s)
-
-```scala
-libraryDependencies += "com.github.markosski" % "markov4s_2.12" % "0.2.0"
-```
-
-# Usage
+# Basic Usage
 
 ```scala mdoc
 import markov4s._
@@ -37,6 +28,7 @@ val chain3 = MarkovChain[String] + ("c" -> "d")
 ```
 
 ## Create from sequence
+
 ```scala mdoc
 val chain4 = MarkovChain[String]
     .fromSeq(List("hello", "world", "how", "are", "you"))
@@ -48,7 +40,6 @@ chain4.getSeq("hello", 6)
 ```
 
 As you can see from the output, new sentence was build using words with highest occurance.
-
 We can randomize this where next selected words will be chosen based on their probability to occure.
 
 ```scala mdoc
