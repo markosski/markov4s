@@ -81,7 +81,7 @@ ga('send', 'pageview');
 Let’s try to ask for sequence where next item will be selected based on probability.</p>
 
 <div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">implicit</span> <span class="k">val</span> <span class="nv">rand</span> <span class="k">=</span> <span class="nc">Rand</span><span class="o">()</span>
-<span class="c1">// rand: Rand = markov4s.Rand@6bb134d0</span>
+<span class="c1">// rand: Rand = markov4s.Rand@ec14197</span>
 
 <span class="c1">// Our 10 day weather prognosis</span>
 <span class="nv">chain4</span><span class="o">.</span><span class="py">getSeqWithProb</span><span class="o">(</span><span class="s">"sunny"</span><span class="o">,</span> <span class="mi">10</span><span class="o">)</span>
@@ -90,34 +90,34 @@ Let’s try to ask for sequence where next item will be selected based on probab
 <span class="c1">//   "sunny",</span>
 <span class="c1">//   "sunny",</span>
 <span class="c1">//   "sunny",</span>
-<span class="c1">//   "cloudy",</span>
-<span class="c1">//   "rainy",</span>
-<span class="c1">//   "rainy",</span>
-<span class="c1">//   "cloudy",</span>
 <span class="c1">//   "sunny",</span>
-<span class="c1">//   "cloudy"</span>
+<span class="c1">//   "sunny",</span>
+<span class="c1">//   "sunny",</span>
+<span class="c1">//   "cloudy",</span>
+<span class="c1">//   "cloudy",</span>
+<span class="c1">//   "sunny"</span>
 <span class="c1">// )</span>
 <span class="nv">chain4</span><span class="o">.</span><span class="py">getSeqWithProb</span><span class="o">(</span><span class="s">"sunny"</span><span class="o">,</span> <span class="mi">10</span><span class="o">)</span>
 <span class="c1">// res4: Vector[String] = Vector(</span>
 <span class="c1">//   "sunny",</span>
-<span class="c1">//   "sunny",</span>
-<span class="c1">//   "cloudy",</span>
-<span class="c1">//   "cloudy",</span>
 <span class="c1">//   "rainy",</span>
 <span class="c1">//   "sunny",</span>
-<span class="c1">//   "sunny",</span>
-<span class="c1">//   "sunny",</span>
+<span class="c1">//   "rainy",</span>
+<span class="c1">//   "rainy",</span>
+<span class="c1">//   "rainy",</span>
 <span class="c1">//   "cloudy",</span>
-<span class="c1">//   "cloudy"</span>
+<span class="c1">//   "rainy",</span>
+<span class="c1">//   "rainy",</span>
+<span class="c1">//   "sunny"</span>
 <span class="c1">// )</span>
 <span class="nv">chain4</span><span class="o">.</span><span class="py">getSeqWithProb</span><span class="o">(</span><span class="s">"sunny"</span><span class="o">,</span> <span class="mi">10</span><span class="o">)</span>
 <span class="c1">// res5: Vector[String] = Vector(</span>
 <span class="c1">//   "sunny",</span>
 <span class="c1">//   "sunny",</span>
 <span class="c1">//   "sunny",</span>
-<span class="c1">//   "sunny",</span>
-<span class="c1">//   "sunny",</span>
 <span class="c1">//   "rainy",</span>
+<span class="c1">//   "sunny",</span>
+<span class="c1">//   "sunny",</span>
 <span class="c1">//   "sunny",</span>
 <span class="c1">//   "sunny",</span>
 <span class="c1">//   "sunny",</span>
