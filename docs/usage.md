@@ -1,21 +1,12 @@
 ---
-layout: home
-title:  "Home"
-section: "home"
+layout: page
+title: "Basic Usage"
+section: "usage"
 position: 1
 ---
 
-Markov4s is a small library that implements MarkovChain data structure.
 
-# Installation
-
-Packages is available on Bintray [https://bintray.com/markosski/maven/markov4s](https://bintray.com/markosski/maven/markov4s)
-
-```scala
-libraryDependencies += "com.github.markosski" % "markov4s_2.12" % "0.2.0"
-```
-
-# Usage
+# Basic Usage
 
 ```scala mdoc
 import markov4s._
@@ -37,22 +28,25 @@ val chain3 = MarkovChain[String] + ("c" -> "d")
 ```
 
 ## Create from sequence
+
 ```scala mdoc
 val chain4 = MarkovChain[String]
-    .fromSeq(List("hello", "world", "how", "are", "things", "?"))
-    .fromSeq(List("hello", "John", "how", "is", "life", "?"))
-    .fromSeq(List("hello", "John", "how", "are", "you", "?"))
+    .fromSeq(List("hello", "world", "how", "are", "you"))
+    .fromSeq(List("hello", "Susan", "how", "are", "things"))
+    .fromSeq(List("hello", "John", "how", "is", "life"))
+    .fromSeq(List("hello", "John", "how", "do", "you", "do"))
 
 chain4.getSeq("hello", 6)
 ```
 
 As you can see from the output, new sentence was build using words with highest occurance.
-
 We can randomize this where next selected words will be chosen based on their probability to occure.
 
 ```scala mdoc
 implicit val rand = Rand()
 
+chain4.getSeqWithProb("hello", 6)
+chain4.getSeqWithProb("hello", 6)
 chain4.getSeqWithProb("hello", 6)
 ```
 Note: This documentation is generated which may cause some code evaluations return different result.
