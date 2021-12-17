@@ -10,10 +10,8 @@ A Markov chain is a stochastic model describing a sequence of possible events in
 
 # Installation
 
-Packages is available on Bintray [https://bintray.com/markosski/maven/markov4s](https://bintray.com/markosski/maven/markov4s)
-
 ```scala
-libraryDependencies += "com.github.markosski" % "markov4s_2.12" % "0.2.0"
+libraryDependencies += "io.github.markosski" % "markov4s_2.12" % "0.2.0"
 ```
 
 # Usage
