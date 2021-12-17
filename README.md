@@ -1,5 +1,5 @@
 
-# Markov4s [![Build Status](https://travis-ci.org/markosski/cloudsync.svg?branch=master)](https://travis-ci.org/markosski/markov4s) [ ![Download](https://api.bintray.com/packages/markosski/maven/markov4s/images/download.svg) ](https://bintray.com/markosski/maven/markov4s/_latestVersion)
+# Markov4s [![Build Status](https://travis-ci.org/markosski/cloudsync.svg?branch=master)](https://travis-ci.org/markosski/markov4s)
 
 Markov4s is a small library that implements MarkovChain data structure.
 Learn more on the website: [https://markosski.github.io/markov4s/](https://markosski.github.io/markov4s/)
